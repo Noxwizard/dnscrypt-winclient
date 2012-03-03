@@ -1,0 +1,7 @@
+/*.opensdf
+/*.sdf
+/*.suo
+/dnscrypt-winclient/bin/Debug/*
+/dnscrypt-winclient/bin/Release/*
+/dnscrypt-winclient/obj/*
+/dnscrypt-winclient/*.user
