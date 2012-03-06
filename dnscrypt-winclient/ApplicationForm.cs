@@ -171,17 +171,27 @@ namespace dnscrypt_winclient
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+		private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			this.Show();
 			this.WindowState = FormWindowState.Normal;
 			this.ShowInTaskbar = true;
-			this.notifyIcon1.Visible = false;
+			this.notifyIcon.Visible = false;
 
 			if (this.CryptProcRunning)
 			{
 				ShowWindow(this.CryptHandle.MainWindowHandle, SW_SHOWMINIMIZED);
 			}
+		}
+
+		/// <summary>
+		/// The callback for clicking "Open" on the system tray
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void notifyIcon_Open(object sender, EventArgs e)
+		{
+			this.notifyIcon_MouseDoubleClick(sender, null);
 		}
 
 		/// <summary>
@@ -195,13 +205,23 @@ namespace dnscrypt_winclient
 			{
 				this.Hide();
 				this.ShowInTaskbar = false;
-				this.notifyIcon1.Visible = true;
+				this.notifyIcon.Visible = true;
 
 				if (this.CryptProcRunning)
 				{
 					ShowWindow(this.CryptHandle.MainWindowHandle, SW_HIDE);
 				}
 			}
+		}
+
+		/// <summary>
+		/// The callback for clicking "Exit" on the system tray
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void notifyIcon_Exit(object sender, EventArgs e)
+		{
+			this.Close();
 		}
 	}
 

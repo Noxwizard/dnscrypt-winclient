@@ -34,9 +34,13 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.service_label = new System.Windows.Forms.Label();
 			this.service_button = new System.Windows.Forms.Button();
-			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+			this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+			this.notifyIconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tcp_checkbox = new System.Windows.Forms.CheckBox();
 			this.tcp_port_number = new System.Windows.Forms.TextBox();
+			this.notifyIconContextOpen = new System.Windows.Forms.ToolStripMenuItem();
+			this.notifyIconContextExit = new System.Windows.Forms.ToolStripMenuItem();
+			this.notifyIconContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// DNSlistbox
@@ -78,11 +82,19 @@
 			this.service_button.UseVisualStyleBackColor = true;
 			this.service_button.Click += new System.EventHandler(this.service_button_Click);
 			// 
-			// notifyIcon1
+			// notifyIcon
 			// 
-			this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-			this.notifyIcon1.Text = "DNSCrypt Proxy Client";
-			this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+			this.notifyIcon.ContextMenuStrip = this.notifyIconContextMenu;
+			this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+			this.notifyIcon.Text = "DNSCrypt Proxy Client";
+			this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
+			// 
+			// notifyIconContextMenu
+			// 
+			this.notifyIconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.notifyIconContextOpen, this.notifyIconContextExit});
+			this.notifyIconContextMenu.Name = "notifyIconContextMenu";
+			this.notifyIconContextMenu.Size = new System.Drawing.Size(181, 48);
 			// 
 			// tcp_checkbox
 			// 
@@ -103,6 +115,20 @@
 			this.tcp_port_number.TabIndex = 5;
 			this.tcp_port_number.Text = "443";
 			// 
+			// notifyIconContextOpen
+			// 
+			this.notifyIconContextOpen.Name = "notifyIconContextOpen";
+			this.notifyIconContextOpen.Size = new System.Drawing.Size(152, 22);
+			this.notifyIconContextOpen.Text = "Open";
+			this.notifyIconContextOpen.Click += new System.EventHandler(this.notifyIcon_Open);
+			// 
+			// notifyIconContextExit
+			// 
+			this.notifyIconContextExit.Name = "notifyIconContextExit";
+			this.notifyIconContextExit.Size = new System.Drawing.Size(152, 22);
+			this.notifyIconContextExit.Text = "Exit";
+			this.notifyIconContextExit.Click += new System.EventHandler(this.notifyIcon_Exit);
+			// 
 			// ApplicationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -120,6 +146,7 @@
 			this.Text = "DNSCrypt Proxy Client";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_closing);
 			this.Resize += new System.EventHandler(this.form_resized);
+			this.notifyIconContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -131,9 +158,12 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label service_label;
 		private System.Windows.Forms.Button service_button;
-		private System.Windows.Forms.NotifyIcon notifyIcon1;
+		private System.Windows.Forms.NotifyIcon notifyIcon;
 		private System.Windows.Forms.CheckBox tcp_checkbox;
 		private System.Windows.Forms.TextBox tcp_port_number;
+		private System.Windows.Forms.ContextMenuStrip notifyIconContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem notifyIconContextOpen;
+		private System.Windows.Forms.ToolStripMenuItem notifyIconContextExit;
 	}
 }
 
