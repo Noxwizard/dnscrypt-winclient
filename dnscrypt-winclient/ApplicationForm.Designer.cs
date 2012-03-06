@@ -103,7 +103,7 @@
 			this.tcp_port_number.TabIndex = 5;
 			this.tcp_port_number.Text = "443";
 			// 
-			// Form1
+			// ApplicationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -116,7 +116,7 @@
 			this.Controls.Add(this.DNSlistbox);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Name = "Form1";
+			this.Name = "ApplicationForm";
 			this.Text = "DNSCrypt Proxy Client";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_closing);
 			this.Resize += new System.EventHandler(this.form_resized);

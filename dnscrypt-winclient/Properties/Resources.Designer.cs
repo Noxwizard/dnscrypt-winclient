@@ -60,9 +60,9 @@ namespace dnscrypt_winclient.Properties {
             }
         }
         
-        internal static System.Drawing.Icon opendns {
+        internal static System.Drawing.Icon OpenDNSCrypt {
             get {
-                object obj = ResourceManager.GetObject("opendns", resourceCulture);
+                object obj = ResourceManager.GetObject("OpenDNSCrypt", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
