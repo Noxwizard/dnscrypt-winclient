@@ -9,7 +9,7 @@ Simply place the DNSCrypt proxy binary (https://github.com/opendns/dnscrypt-prox
 
 Features
 ========
-- Enable DNSCrypt on multiple adapter via a checkbox
+- Enable DNSCrypt on multiple adapters via a checkbox
 - Specify a TCP port to use instead of UDP 53
 - Start/Stop the DNSCrypt proxy
 
@@ -19,4 +19,4 @@ Possible future plans
 =====================
 - Have a background worker periodically check that the proxy application hasn't crashed.
 - Pick up a few of the other parameters that the proxy accepts
-- Filter out junk adapaters like ISATAP, Loopback, Terado, and virtual mini-ports
+- Filter out junk adapters like ISATAP, Loopback, Terado, and virtual mini-ports

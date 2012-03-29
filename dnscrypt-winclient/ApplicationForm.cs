@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -103,6 +104,13 @@ namespace dnscrypt_winclient
 			// Start the DNSCrypt process
 			if (!this.CryptProcRunning)
 			{
+				// Make sure the file exists before trying to launch it
+				if (!File.Exists(Directory.GetCurrentDirectory() + "\\dnscrypt-proxy.exe"))
+				{
+					MessageBox.Show("dnscrypt-proxy.exe was not found. It should be placed in the same directory as this program. If you do not have this file, you can download it from https://github.com/opendns/dnscrypt-proxy/downloads", "File not found");
+					return;
+				}
+
 				this.CryptProc = new ProcessStartInfo();
 				this.CryptProc.FileName = "dnscrypt-proxy.exe";
 				this.CryptProc.WindowStyle = ProcessWindowStyle.Minimized;
@@ -120,7 +128,12 @@ namespace dnscrypt_winclient
 			}
 			else
 			{
-				this.CryptHandle.Kill();
+				// Make sure the proxy wasn't terminated by another application/user
+				if (!this.CryptHandle.HasExited)
+				{
+					this.CryptHandle.Kill();
+				}
+
 				this.CryptProc = null;
 
 				this.service_button.Text = "Start";
