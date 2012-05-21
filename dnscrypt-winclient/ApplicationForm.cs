@@ -117,7 +117,7 @@ namespace dnscrypt_winclient
 
 				if (this.tcp_checkbox.Checked)
 				{
-					this.CryptProc.Arguments = "-t " + Convert.ToInt16(this.tcp_port_number.Text);
+					this.CryptProc.Arguments = "-T -t " + Convert.ToInt16(this.tcp_port_number.Text);
 				}
 		
 				this.CryptHandle = Process.Start(this.CryptProc);
