@@ -43,6 +43,7 @@
 			this.protoTCP = new System.Windows.Forms.RadioButton();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
+			this.hideAdaptersCheckbox = new System.Windows.Forms.CheckBox();
 			this.notifyIconContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -121,7 +122,7 @@
             "53",
             "443",
             "5353"});
-			this.portBox.Location = new System.Drawing.Point(227, 136);
+			this.portBox.Location = new System.Drawing.Point(240, 138);
 			this.portBox.Name = "portBox";
 			this.portBox.Size = new System.Drawing.Size(59, 21);
 			this.portBox.TabIndex = 6;
@@ -160,23 +161,36 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(192, 139);
+			this.label3.Location = new System.Drawing.Point(205, 141);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(29, 13);
 			this.label3.TabIndex = 10;
 			this.label3.Text = "Port:";
+			// 
+			// hideAdaptersCheckbox
+			// 
+			this.hideAdaptersCheckbox.AutoSize = true;
+			this.hideAdaptersCheckbox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.hideAdaptersCheckbox.Location = new System.Drawing.Point(402, 135);
+			this.hideAdaptersCheckbox.Name = "hideAdaptersCheckbox";
+			this.hideAdaptersCheckbox.Size = new System.Drawing.Size(132, 17);
+			this.hideAdaptersCheckbox.TabIndex = 11;
+			this.hideAdaptersCheckbox.Text = "Show hidden adapters";
+			this.hideAdaptersCheckbox.UseVisualStyleBackColor = true;
+			this.hideAdaptersCheckbox.CheckedChanged += new System.EventHandler(this.refreshNICList);
 			// 
 			// ApplicationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(546, 197);
-			this.Controls.Add(this.label3);
+			this.Controls.Add(this.hideAdaptersCheckbox);
 			this.Controls.Add(this.label2);
+			this.Controls.Add(this.label3);
 			this.Controls.Add(this.protoTCP);
 			this.Controls.Add(this.protoUDP);
-			this.Controls.Add(this.portBox);
 			this.Controls.Add(this.service_button);
+			this.Controls.Add(this.portBox);
 			this.Controls.Add(this.service_label);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.DNSlistbox);
@@ -207,6 +221,7 @@
 		private System.Windows.Forms.RadioButton protoTCP;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.CheckBox hideAdaptersCheckbox;
 	}
 }
 

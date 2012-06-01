@@ -23,14 +23,14 @@ namespace dnscrypt_winclient
 		public ApplicationForm()
 		{
 			InitializeComponent();
-			GetNICs();
-			this.portBox.SelectedIndex = 0;
+			GetNICs(false);
+			this.portBox.SelectedIndex = 1;	//Port 443
 		}
 
 		/// <summary>
 		/// Fills the ListBox with information about each NIC
 		/// </summary>
-		private void GetNICs()
+		private void GetNICs(Boolean showHidden)
 		{
 			NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
 			foreach (NetworkInterface adapter in adapters)
@@ -48,7 +48,10 @@ namespace dnscrypt_winclient
 				}
 
 				NetworkListItem item = new NetworkListItem(adapter.Description, dnsServers);
-				DNSlistbox.Items.Add(item);
+				if (!item.hidden || showHidden)
+				{
+					DNSlistbox.Items.Add(item);
+				}
 
 				/*
 				IPAddressCollection dnsServers2 = adapterProperties.DnsAddresses;
@@ -134,7 +137,13 @@ namespace dnscrypt_winclient
 				// Make sure the proxy wasn't terminated by another application/user
 				if (!this.CryptHandle.HasExited)
 				{
-					this.CryptHandle.Kill();
+					try
+					{
+						this.CryptHandle.Kill();
+					}
+					catch (Exception)	//There can be strange conditions during Windows Shutdown, so we'll ignore thrown exceptions
+					{
+					}
 				}
 
 				this.CryptProc = null;
@@ -239,6 +248,17 @@ namespace dnscrypt_winclient
 		{
 			this.Close();
 		}
+
+		/// <summary>
+		/// Refreshes the NIC listing box with the hidden devices either shown or hidden
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void refreshNICList(object sender, EventArgs e)
+		{
+			this.DNSlistbox.Items.Clear();
+			this.GetNICs(this.hideAdaptersCheckbox.Checked);
+		}
 	}
 
 	/// <summary>
@@ -248,11 +268,17 @@ namespace dnscrypt_winclient
 	{
 		public String NIC;
 		public List<string> DNSservers;
+		public Boolean hidden = false;
 
 		public NetworkListItem(String Name, List<string> IPs)
 		{
 			this.NIC = Name;
 			this.DNSservers = IPs;
+
+			if (this.shouldHide(Name))
+			{
+				this.hidden = true;
+			}
 		}
 
 		public override string ToString()
@@ -269,6 +295,35 @@ namespace dnscrypt_winclient
 			}
 
 			return message;
+		}
+
+		/// <summary>
+		/// Returns if a device should be flagged as hidden or not.
+		/// Adapters such as Hamachi or virtual machines typically have their own settings
+		/// which you should rarely ever need to change.
+		/// </summary>
+		/// <param name="Name">The name of the NIC</param>
+		private Boolean shouldHide(String Name)
+		{
+			string[] blacklist = { 
+				"Microsoft Virtual",
+				"Hamachi Network",
+				"VMware Virtual",
+				"VirtualBox",
+				"Software Loopback",
+				"Microsoft ISATAP",
+				"Teredo Tunneling Pseudo-Interface"
+			};
+
+			foreach (string entry in blacklist)
+			{
+				if (Name.Contains(entry))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

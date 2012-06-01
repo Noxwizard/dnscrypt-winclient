@@ -24,4 +24,6 @@ Possible future plans
 =====================
 - Have a background worker periodically check that the proxy application hasn't crashed.
 - Pick up a few of the other parameters that the proxy accepts
-- Filter out junk adapters like ISATAP, Loopback, Terado, and virtual mini-ports
+- Enable parental control (use --resolver-address=208.67.220.123)
+- Support IPv6 (use --resolver-address=2620:0:ccd::2)
+- "gateway" mode (use --local-address=0.0.0.0)
