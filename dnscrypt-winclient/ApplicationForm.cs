@@ -24,6 +24,7 @@ namespace dnscrypt_winclient
 		{
 			InitializeComponent();
 			GetNICs();
+			this.portBox.SelectedIndex = 0;
 		}
 
 		/// <summary>
@@ -115,11 +116,13 @@ namespace dnscrypt_winclient
 				this.CryptProc.FileName = "dnscrypt-proxy.exe";
 				this.CryptProc.WindowStyle = ProcessWindowStyle.Minimized;
 
-				if (this.tcp_checkbox.Checked)
+				if (this.protoTCP.Checked)
 				{
-					this.CryptProc.Arguments = "-T -t " + Convert.ToInt16(this.tcp_port_number.Text);
+					this.CryptProc.Arguments = "-T";
 				}
-		
+
+				this.CryptProc.Arguments += " -t " + this.portBox.SelectedItem.ToString();
+
 				this.CryptHandle = Process.Start(this.CryptProc);
 
 				this.service_button.Text = "Stop";

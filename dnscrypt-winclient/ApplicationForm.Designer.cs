@@ -36,10 +36,13 @@
 			this.service_button = new System.Windows.Forms.Button();
 			this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.notifyIconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.tcp_checkbox = new System.Windows.Forms.CheckBox();
-			this.tcp_port_number = new System.Windows.Forms.TextBox();
 			this.notifyIconContextOpen = new System.Windows.Forms.ToolStripMenuItem();
 			this.notifyIconContextExit = new System.Windows.Forms.ToolStripMenuItem();
+			this.portBox = new System.Windows.Forms.ComboBox();
+			this.protoUDP = new System.Windows.Forms.RadioButton();
+			this.protoTCP = new System.Windows.Forms.RadioButton();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
 			this.notifyIconContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -92,28 +95,10 @@
 			// notifyIconContextMenu
 			// 
 			this.notifyIconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.notifyIconContextOpen, this.notifyIconContextExit});
+            this.notifyIconContextOpen,
+            this.notifyIconContextExit});
 			this.notifyIconContextMenu.Name = "notifyIconContextMenu";
 			this.notifyIconContextMenu.Size = new System.Drawing.Size(181, 48);
-			// 
-			// tcp_checkbox
-			// 
-			this.tcp_checkbox.AutoSize = true;
-			this.tcp_checkbox.Location = new System.Drawing.Point(12, 141);
-			this.tcp_checkbox.Name = "tcp_checkbox";
-			this.tcp_checkbox.Size = new System.Drawing.Size(96, 17);
-			this.tcp_checkbox.TabIndex = 4;
-			this.tcp_checkbox.Text = "Use TCP port: ";
-			this.tcp_checkbox.UseVisualStyleBackColor = true;
-			// 
-			// tcp_port_number
-			// 
-			this.tcp_port_number.Location = new System.Drawing.Point(104, 141);
-			this.tcp_port_number.MaxLength = 5;
-			this.tcp_port_number.Name = "tcp_port_number";
-			this.tcp_port_number.Size = new System.Drawing.Size(51, 20);
-			this.tcp_port_number.TabIndex = 5;
-			this.tcp_port_number.Text = "443";
 			// 
 			// notifyIconContextOpen
 			// 
@@ -129,13 +114,68 @@
 			this.notifyIconContextExit.Text = "Exit";
 			this.notifyIconContextExit.Click += new System.EventHandler(this.notifyIcon_Exit);
 			// 
+			// portBox
+			// 
+			this.portBox.FormattingEnabled = true;
+			this.portBox.Items.AddRange(new object[] {
+            "53",
+            "443",
+            "5353"});
+			this.portBox.Location = new System.Drawing.Point(227, 136);
+			this.portBox.Name = "portBox";
+			this.portBox.Size = new System.Drawing.Size(59, 21);
+			this.portBox.TabIndex = 6;
+			// 
+			// protoUDP
+			// 
+			this.protoUDP.AutoSize = true;
+			this.protoUDP.Checked = true;
+			this.protoUDP.Location = new System.Drawing.Point(68, 139);
+			this.protoUDP.Name = "protoUDP";
+			this.protoUDP.Size = new System.Drawing.Size(48, 17);
+			this.protoUDP.TabIndex = 7;
+			this.protoUDP.TabStop = true;
+			this.protoUDP.Text = "UDP";
+			this.protoUDP.UseVisualStyleBackColor = true;
+			// 
+			// protoTCP
+			// 
+			this.protoTCP.AutoSize = true;
+			this.protoTCP.Location = new System.Drawing.Point(123, 139);
+			this.protoTCP.Name = "protoTCP";
+			this.protoTCP.Size = new System.Drawing.Size(46, 17);
+			this.protoTCP.TabIndex = 8;
+			this.protoTCP.Text = "TCP";
+			this.protoTCP.UseVisualStyleBackColor = true;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(13, 141);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(49, 13);
+			this.label2.TabIndex = 9;
+			this.label2.Text = "Protocol:";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(192, 139);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(29, 13);
+			this.label3.TabIndex = 10;
+			this.label3.Text = "Port:";
+			// 
 			// ApplicationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(546, 197);
-			this.Controls.Add(this.tcp_port_number);
-			this.Controls.Add(this.tcp_checkbox);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.protoTCP);
+			this.Controls.Add(this.protoUDP);
+			this.Controls.Add(this.portBox);
 			this.Controls.Add(this.service_button);
 			this.Controls.Add(this.service_label);
 			this.Controls.Add(this.label1);
@@ -159,11 +199,14 @@
 		private System.Windows.Forms.Label service_label;
 		private System.Windows.Forms.Button service_button;
 		private System.Windows.Forms.NotifyIcon notifyIcon;
-		private System.Windows.Forms.CheckBox tcp_checkbox;
-		private System.Windows.Forms.TextBox tcp_port_number;
 		private System.Windows.Forms.ContextMenuStrip notifyIconContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem notifyIconContextOpen;
 		private System.Windows.Forms.ToolStripMenuItem notifyIconContextExit;
+		private System.Windows.Forms.ComboBox portBox;
+		private System.Windows.Forms.RadioButton protoUDP;
+		private System.Windows.Forms.RadioButton protoTCP;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label3;
 	}
 }
 
