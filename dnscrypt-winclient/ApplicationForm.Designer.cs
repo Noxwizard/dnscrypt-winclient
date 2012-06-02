@@ -117,6 +117,7 @@
 			// 
 			// portBox
 			// 
+			this.portBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.portBox.FormattingEnabled = true;
 			this.portBox.Items.AddRange(new object[] {
             "53",
