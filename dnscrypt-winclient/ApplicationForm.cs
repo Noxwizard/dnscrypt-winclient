@@ -137,13 +137,7 @@ namespace dnscrypt_winclient
 				// Make sure the proxy wasn't terminated by another application/user
 				if (!this.CryptHandle.HasExited)
 				{
-					try
-					{
-						this.CryptHandle.Kill();
-					}
-					catch (Exception)	//There can be strange conditions during Windows Shutdown, so we'll ignore thrown exceptions
-					{
-					}
+					this.CryptHandle.Kill();
 				}
 
 				this.CryptProc = null;
@@ -176,7 +170,7 @@ namespace dnscrypt_winclient
 			}
 
 			//Kill the DNSCrypt process if it's running
-			if (this.CryptProcRunning)
+			if (this.CryptProcRunning && !this.CryptHandle.HasExited)
 			{
 				this.CryptHandle.Kill();
 				this.CryptProc = null;
