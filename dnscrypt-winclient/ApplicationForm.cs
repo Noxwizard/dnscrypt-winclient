@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Win32;
 
 
 namespace dnscrypt_winclient
@@ -32,25 +31,31 @@ namespace dnscrypt_winclient
 		/// </summary>
 		private void GetNICs(Boolean showHidden)
 		{
+			this.ipv6Radio.Enabled = false;
+
 			NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
 			foreach (NetworkInterface adapter in adapters)
 			{
 				IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
 				List<string> dnsServers = new List<string>();	//More accurate than IPInterfaceProperties.DnsAddresses
+				List<string> dnsServersv6 = new List<string>();
 
 				//Determine if the DNS addresses are obtained automatically or specified
 				//We don't want to add them when the program is closed if they weren't actually set
 				//Unfortunately, neither WMI nor the NetworkInterface class provide information about this setting
-				object regAddress = Registry.GetValue("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\\" + adapter.Id, "NameServer", "");
-				if (regAddress != null && regAddress.ToString().Length > 0)
-				{
-					dnsServers = NetworkManager.getDNS(adapter.Description);
-				}
+				dnsServers = NetworkManager.getDNS(adapter.Id);
+				dnsServersv6 = NetworkManager.getDNSv6(adapter.Id);
 
-				NetworkListItem item = new NetworkListItem(adapter.Description, dnsServers);
+				NetworkListItem item = new NetworkListItem(adapter.Name, adapter.Description, dnsServers, dnsServersv6, adapter.Supports(NetworkInterfaceComponent.IPv4), adapter.Supports(NetworkInterfaceComponent.IPv6));
 				if (!item.hidden || showHidden)
 				{
 					DNSlistbox.Items.Add(item);
+
+					//See if the device supports IPv6 and enable the option if so
+					if (item.IPv6)
+					{
+						this.ipv6Radio.Enabled = true;
+					}
 				}
 
 				/*
@@ -59,12 +64,11 @@ namespace dnscrypt_winclient
 				{
 					//NetworkListItem item = new NetworkListItem(adapter.Description, dnsServers2);
 					//DNSlistbox.Items.Add(item);
-					
+
 					Console.WriteLine(adapter.Description + ": " + adapter.Id);
 					foreach (IPAddress dns in dnsServers2)
 					{
-					    Console.WriteLine("  DNS Servers ............................. : {0}",
-					        dns.ToString());
+					    Console.WriteLine("  DNS Servers ............................. : {0}", dns.ToString());
 					}
 					Console.WriteLine();
 				}*/
@@ -85,11 +89,31 @@ namespace dnscrypt_winclient
 				//Restore the user's old settings
 				if (e.CurrentValue == CheckState.Checked)
 				{
-					NetworkManager.setDNS(((NetworkListItem)DNSlistbox.Items[e.Index]).NIC, ((NetworkListItem)DNSlistbox.Items[e.Index]).DNSservers);
+					if (((NetworkListItem)DNSlistbox.Items[e.Index]).IPv4)
+					{
+						NetworkManager.setDNS(((NetworkListItem)DNSlistbox.Items[e.Index]).NICDescription, ((NetworkListItem)DNSlistbox.Items[e.Index]).DNSservers);
+					}
+
+					//Since we don't set an IPv6 server, don't run this if they didn't have any to begin with
+					if (((NetworkListItem)DNSlistbox.Items[e.Index]).DNSserversv6.Count > 0)
+					{
+						NetworkManager.setDNSv6(((NetworkListItem)DNSlistbox.Items[e.Index]).NICName, ((NetworkListItem)DNSlistbox.Items[e.Index]).DNSserversv6);
+					}
 				}
 				else //Set it to loopback for DNSCrypt
 				{
-					NetworkManager.setDNS(((NetworkListItem)DNSlistbox.Items[e.Index]).NIC, "127.0.0.1");
+					if (((NetworkListItem)DNSlistbox.Items[e.Index]).IPv4)
+					{
+						NetworkManager.setDNS(((NetworkListItem)DNSlistbox.Items[e.Index]).NICDescription, "127.0.0.1");
+					}
+
+					//Only do this if there were custom servers set to begin with
+					if (((NetworkListItem)DNSlistbox.Items[e.Index]).DNSserversv6.Count > 0)
+					{
+						List<string> ip = new List<string>();
+						//ip.Add("::1");
+						NetworkManager.setDNSv6(((NetworkListItem)DNSlistbox.Items[e.Index]).NICName, ip);
+					}
 				}
 			}
 			catch (Exception exception)
@@ -126,6 +150,20 @@ namespace dnscrypt_winclient
 
 				this.CryptProc.Arguments += " -t " + this.portBox.SelectedItem.ToString();
 
+				if (this.ipv6Radio.Checked)
+				{
+					this.CryptProc.Arguments += " --resolver-address=2620:0:ccd::2";
+				}
+				else if (this.parentalControlsRadio.Checked)
+				{
+					this.CryptProc.Arguments += " --resolver-address=208.67.220.123";
+				}
+
+				if (this.gatewayCheckbox.Checked)
+				{
+					this.CryptProc.Arguments += " --local-address=0.0.0.0";
+				}
+
 				this.CryptHandle = Process.Start(this.CryptProc);
 
 				this.service_button.Text = "Stop";
@@ -161,7 +199,12 @@ namespace dnscrypt_winclient
 			{
 				try
 				{
-					NetworkManager.setDNS(item.NIC, item.DNSservers);
+					NetworkManager.setDNS(item.NICDescription, item.DNSservers);
+
+					if (item.DNSserversv6.Count > 0)
+					{
+						NetworkManager.setDNSv6(item.NICName, item.DNSserversv6);
+					}
 				}
 				catch (Exception exception)
 				{
@@ -260,16 +303,24 @@ namespace dnscrypt_winclient
 	/// </summary>
 	public class NetworkListItem
 	{
-		public String NIC;
+		public String NICName;
+		public String NICDescription;
 		public List<string> DNSservers;
+		public List<string> DNSserversv6;
+		public Boolean IPv4 = false;
+		public Boolean IPv6 = false;
 		public Boolean hidden = false;
 
-		public NetworkListItem(String Name, List<string> IPs)
+		public NetworkListItem(String Name, String Description, List<string> IPs, List<string> IPsv6, Boolean IPv4, Boolean IPv6)
 		{
-			this.NIC = Name;
+			this.NICName = Name;
+			this.NICDescription = Description;
 			this.DNSservers = IPs;
+			this.DNSserversv6 = IPsv6;
+			this.IPv4 = IPv4;
+			this.IPv6 = IPv6;
 
-			if (this.shouldHide(Name))
+			if (this.shouldHide(Description))
 			{
 				this.hidden = true;
 			}
@@ -277,15 +328,32 @@ namespace dnscrypt_winclient
 
 		public override string ToString()
 		{
-			String message = this.NIC + " - ";
+			String message = this.NICDescription + " - ";
 
-			if (this.DNSservers.Count > 0)
+			if (this.IPv4)
 			{
-				message += String.Join(", ", DNSservers.ToArray());
+				message += "IPv4: ";
+				if (this.DNSservers.Count > 0)
+				{
+					message += String.Join(", ", DNSservers.ToArray());
+				}
+				else
+				{
+					message += "(Automatic)";
+				}
 			}
-			else
+
+			if (this.IPv6)
 			{
-				message += " (Automatic)";
+				message += " IPv6: ";
+				if (this.DNSserversv6.Count > 0)
+				{
+					message += String.Join(", ", DNSserversv6.ToArray());
+				}
+				else
+				{
+					message += "(Automatic)";
+				}
 			}
 
 			return message;
@@ -297,7 +365,7 @@ namespace dnscrypt_winclient
 		/// which you should rarely ever need to change.
 		/// </summary>
 		/// <param name="Name">The name of the NIC</param>
-		private Boolean shouldHide(String Name)
+		private Boolean shouldHide(String Description)
 		{
 			string[] blacklist = { 
 				"Microsoft Virtual",
@@ -311,7 +379,7 @@ namespace dnscrypt_winclient
 
 			foreach (string entry in blacklist)
 			{
-				if (Name.Contains(entry))
+				if (Description.Contains(entry))
 				{
 					return true;
 				}

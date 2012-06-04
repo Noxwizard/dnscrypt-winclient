@@ -44,7 +44,13 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.hideAdaptersCheckbox = new System.Windows.Forms.CheckBox();
+			this.serverGroupBox = new System.Windows.Forms.GroupBox();
+			this.parentalControlsRadio = new System.Windows.Forms.RadioButton();
+			this.ipv6Radio = new System.Windows.Forms.RadioButton();
+			this.ipv4Radio = new System.Windows.Forms.RadioButton();
+			this.gatewayCheckbox = new System.Windows.Forms.CheckBox();
 			this.notifyIconContextMenu.SuspendLayout();
+			this.serverGroupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// DNSlistbox
@@ -70,7 +76,7 @@
 			// service_label
 			// 
 			this.service_label.AutoSize = true;
-			this.service_label.Location = new System.Drawing.Point(93, 173);
+			this.service_label.Location = new System.Drawing.Point(93, 213);
 			this.service_label.Name = "service_label";
 			this.service_label.Size = new System.Drawing.Size(128, 13);
 			this.service_label.TabIndex = 2;
@@ -78,7 +84,7 @@
 			// 
 			// service_button
 			// 
-			this.service_button.Location = new System.Drawing.Point(12, 168);
+			this.service_button.Location = new System.Drawing.Point(12, 208);
 			this.service_button.Name = "service_button";
 			this.service_button.Size = new System.Drawing.Size(75, 23);
 			this.service_button.TabIndex = 3;
@@ -123,7 +129,7 @@
             "53",
             "443",
             "5353"});
-			this.portBox.Location = new System.Drawing.Point(240, 138);
+			this.portBox.Location = new System.Drawing.Point(227, 138);
 			this.portBox.Name = "portBox";
 			this.portBox.Size = new System.Drawing.Size(59, 21);
 			this.portBox.TabIndex = 6;
@@ -162,7 +168,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(205, 141);
+			this.label3.Location = new System.Drawing.Point(192, 141);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(29, 13);
 			this.label3.TabIndex = 10;
@@ -180,28 +186,89 @@
 			this.hideAdaptersCheckbox.UseVisualStyleBackColor = true;
 			this.hideAdaptersCheckbox.CheckedChanged += new System.EventHandler(this.refreshNICList);
 			// 
+			// serverGroupBox
+			// 
+			this.serverGroupBox.BackColor = System.Drawing.SystemColors.Control;
+			this.serverGroupBox.Controls.Add(this.parentalControlsRadio);
+			this.serverGroupBox.Controls.Add(this.ipv6Radio);
+			this.serverGroupBox.Controls.Add(this.ipv4Radio);
+			this.serverGroupBox.Location = new System.Drawing.Point(12, 165);
+			this.serverGroupBox.Name = "serverGroupBox";
+			this.serverGroupBox.Size = new System.Drawing.Size(274, 37);
+			this.serverGroupBox.TabIndex = 12;
+			this.serverGroupBox.TabStop = false;
+			this.serverGroupBox.Text = "OpenDNS Server Connection";
+			// 
+			// parentalControlsRadio
+			// 
+			this.parentalControlsRadio.AutoSize = true;
+			this.parentalControlsRadio.Location = new System.Drawing.Point(114, 14);
+			this.parentalControlsRadio.Name = "parentalControlsRadio";
+			this.parentalControlsRadio.Size = new System.Drawing.Size(139, 17);
+			this.parentalControlsRadio.TabIndex = 2;
+			this.parentalControlsRadio.Text = "Enable parental controls";
+			this.parentalControlsRadio.UseVisualStyleBackColor = true;
+			// 
+			// ipv6Radio
+			// 
+			this.ipv6Radio.AutoSize = true;
+			this.ipv6Radio.Location = new System.Drawing.Point(60, 14);
+			this.ipv6Radio.Name = "ipv6Radio";
+			this.ipv6Radio.Size = new System.Drawing.Size(47, 17);
+			this.ipv6Radio.TabIndex = 1;
+			this.ipv6Radio.Text = "IPv6";
+			this.ipv6Radio.UseVisualStyleBackColor = true;
+			// 
+			// ipv4Radio
+			// 
+			this.ipv4Radio.AutoSize = true;
+			this.ipv4Radio.Checked = true;
+			this.ipv4Radio.Location = new System.Drawing.Point(7, 14);
+			this.ipv4Radio.Name = "ipv4Radio";
+			this.ipv4Radio.Size = new System.Drawing.Size(47, 17);
+			this.ipv4Radio.TabIndex = 0;
+			this.ipv4Radio.TabStop = true;
+			this.ipv4Radio.Text = "IPv4";
+			this.ipv4Radio.UseVisualStyleBackColor = true;
+			// 
+			// gatewayCheckbox
+			// 
+			this.gatewayCheckbox.AutoSize = true;
+			this.gatewayCheckbox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.gatewayCheckbox.Location = new System.Drawing.Point(390, 179);
+			this.gatewayCheckbox.Name = "gatewayCheckbox";
+			this.gatewayCheckbox.Size = new System.Drawing.Size(143, 17);
+			this.gatewayCheckbox.TabIndex = 13;
+			this.gatewayCheckbox.Text = "Act as a gateway device";
+			this.gatewayCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// ApplicationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(546, 197);
+			this.ClientSize = new System.Drawing.Size(546, 235);
+			this.Controls.Add(this.gatewayCheckbox);
+			this.Controls.Add(this.serverGroupBox);
 			this.Controls.Add(this.hideAdaptersCheckbox);
 			this.Controls.Add(this.label2);
-			this.Controls.Add(this.label3);
 			this.Controls.Add(this.protoTCP);
 			this.Controls.Add(this.protoUDP);
 			this.Controls.Add(this.service_button);
-			this.Controls.Add(this.portBox);
-			this.Controls.Add(this.service_label);
 			this.Controls.Add(this.label1);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.service_label);
 			this.Controls.Add(this.DNSlistbox);
+			this.Controls.Add(this.portBox);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximizeBox = false;
 			this.Name = "ApplicationForm";
 			this.Text = "DNSCrypt Proxy Client";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_closing);
 			this.Resize += new System.EventHandler(this.form_resized);
 			this.notifyIconContextMenu.ResumeLayout(false);
+			this.serverGroupBox.ResumeLayout(false);
+			this.serverGroupBox.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -223,6 +290,11 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.CheckBox hideAdaptersCheckbox;
+		private System.Windows.Forms.GroupBox serverGroupBox;
+		private System.Windows.Forms.RadioButton parentalControlsRadio;
+		private System.Windows.Forms.RadioButton ipv6Radio;
+		private System.Windows.Forms.RadioButton ipv4Radio;
+		private System.Windows.Forms.CheckBox gatewayCheckbox;
 	}
 }
 
