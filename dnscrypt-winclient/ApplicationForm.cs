@@ -148,16 +148,19 @@ namespace dnscrypt_winclient
 					this.CryptProc.Arguments = "-T";
 				}
 
-				this.CryptProc.Arguments += " -t " + this.portBox.SelectedItem.ToString();
-
 				if (this.ipv6Radio.Checked)
 				{
-					this.CryptProc.Arguments += " --resolver-address=2620:0:ccd::2";
+					this.CryptProc.Arguments += " --resolver-address=[2620:0:ccd::2]";
 				}
 				else if (this.parentalControlsRadio.Checked)
 				{
 					this.CryptProc.Arguments += " --resolver-address=208.67.220.123";
 				}
+				else
+				{
+					this.CryptProc.Arguments += " --resolver-address=208.67.220.220";
+				}
+				this.CryptProc.Arguments += ":" + this.portBox.SelectedItem.ToString();
 
 				if (this.gatewayCheckbox.Checked)
 				{
