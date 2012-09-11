@@ -142,16 +142,19 @@ namespace dnscrypt_winclient
 					this.CryptProc.Arguments = "-T";
 				}
 
-				this.CryptProc.Arguments += " -t " + ((ComboBoxItem)portBox.SelectedItem).Content;
-
 				if ((bool)this.ipv6Radio.IsChecked)
 				{
-					this.CryptProc.Arguments += " --resolver-address=2620:0:ccd::2";
+					this.CryptProc.Arguments += " --resolver-address=[2620:0:ccd::2]";
 				}
 				else if ((bool)this.parentalControlsRadio.IsChecked)
 				{
 					this.CryptProc.Arguments += " --resolver-address=208.67.220.123";
 				}
+				else
+				{
+					this.CryptProc.Arguments += " --resolver-address=208.67.220.220";
+				}
+				this.CryptProc.Arguments += ":" + ((ComboBoxItem)portBox.SelectedItem).Content;
 
 				if ((bool)this.gatewayCheckbox.IsChecked)
 				{
