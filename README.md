@@ -1,4 +1,4 @@
-![image](https://raw.github.com/Noxwizard/dnscrypt-winclient/master/screenshot.png)
+![image](https://raw.github.com/FivfBx2dOQTC3gc8YS4yMNo0el/dnscrypt-winclient/master/screenshot.png)
 
 About
 =====
@@ -6,19 +6,20 @@ The purpose of this application is to allow the user to have a better experience
 
 Requirements
 ============
-DNSCrypt Proxy 0.9.4 or greater (https://github.com/opendns/dnscrypt-proxy/downloads)  
+DNSCrypt Proxy 0.9.4 or greater (http://download.dnscrypt.org/dnscrypt-proxy/)  
 Microsoft .NET Framework 2.0 or greater (http://www.microsoft.com/net/download)
 
 Running
 =======
 Executables can be found in the /binaries directory. Unless you have issues, use the Release binary.  
-Simply place the DNSCrypt proxy binary (https://github.com/opendns/dnscrypt-proxy/downloads) in the same directory as this binary and execute the Windows client.
+Simply place the DNSCrypt proxy binary (http://download.dnscrypt.org/dnscrypt-proxy/) in the same directory as this binary and execute the Windows client.
 
 Features
 ========
 - Enable DNSCrypt on multiple adapters via a checkbox
 - Specify a port and protocol to send on
 - Start/Stop the DNSCrypt proxy
+- Select DNS resolver, OpenDNS or CloudNS.com.au
 - Connect to OpenDNS via IPv6
 - Connect to OpenDNS with Parental Controls enabled
 - Enable the proxy to act as a gateway device
