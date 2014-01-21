@@ -183,6 +183,23 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
 </value>
   </data>
+  <data name="richTextBox1.Text" xml:space="preserve">
+    <value>DNSCrypt WinClient
+A GUI management tool for the DNSCrypt proxy by OpenDNS.
+
+DNSCrypt: http://dnscrypt.org/
+DNSCrypt WinClient: https://github.com/Noxwizard/dnscrypt-winclient
+OpenDNS: http://opendns.com/
+
+Copyright (c) 2013
+License: http://opensource.org/licenses/MIT</value>
+  </data>
+  <metadata name="serviceTooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>303, 17</value>
+  </metadata>
+  <metadata name="tooltip_plugin.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>430, 17</value>
+  </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAICAAAAEAGACoDAAAFgAAACgAAAAgAAAAQAAAAAEAGAAAAAAAAAAAABMLAAATCwAAAAAAAAAA
