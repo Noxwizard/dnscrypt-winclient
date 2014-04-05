@@ -71,6 +71,12 @@ Add your own by editing dnscrypt-winclient.exe.config.
     - Provider name: 2.dnscrypt-cert-2.cloudns.com.au
     - Public key: 67A4:323E:581F:79B9:BC54:825F:54FE:1025:8B4F:37EB:0D07:0BCE:4010:6195:D94F:E330
 
+* [okTurtles](http://opendns.com)
+  - IPv4: 23.226.227.93
+  - Ports: 443
+  - Provider name: 2.dnscrypt-cert.okturtles.com
+  - Public key: 1D85:3953:E34F:AFD0:05F9:4C6F:D1CC:E635:D411:9904:0D48:D19A:5D35:0B6A:7C81:73CB
+
 * [OpenNIC](http://www.opennicproject.org/) - No logs
   * Japan
     - IPv4: 106.186.17.181
