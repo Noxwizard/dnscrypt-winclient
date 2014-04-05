@@ -561,7 +561,12 @@ namespace dnscrypt_winclient
 			ProcessStartInfo proc = new ProcessStartInfo();
 			proc.FileName = "dnscrypt-proxy.exe";
 			proc.UseShellExecute = true;
-			proc.Verb = "runas";
+
+			// Elevate process permissions on Vista and higher
+			if (System.Environment.OSVersion.Version.Major >= 6)
+			{
+				proc.Verb = "runas";
+			}
 
 			if (this.ServiceInstalled)
 			{
