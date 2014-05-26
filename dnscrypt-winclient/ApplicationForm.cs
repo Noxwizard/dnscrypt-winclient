@@ -563,6 +563,9 @@ namespace dnscrypt_winclient
 				{
 					return;
 				}
+
+				proc.Arguments += " --resolver-name=\"" + this.Providers[this.combobox_provider.SelectedIndex].name + "\"";
+				proc.Arguments += " --resolvers-list=\"" + Directory.GetCurrentDirectory() + "\\dnscrypt-resolvers.csv" + "\"";
 			}
 
 			try
