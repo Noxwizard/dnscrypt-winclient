@@ -16,11 +16,7 @@ Simply place the DNSCrypt proxy files (https://github.com/opendns/dnscrypt-proxy
 
 Required DNSCrypt Proxy files
 -----------------------------
-- dnscrypt-proxy.exe
-- dnscrypt-resolvers.csv
-- libldns-1.dll
-- libsodium-4.dll
-
+The contents of the /bin directory
 
 Features
 ========

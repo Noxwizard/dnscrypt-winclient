@@ -108,7 +108,7 @@ namespace dnscrypt_winclient
 				string[] fileEntries = Directory.GetFiles(pluginDirectory, "*.dll");
 				foreach (string fileName in fileEntries)
 				{
-					IntPtr pDll = NativeMethods.LoadLibrary(fileName);
+					IntPtr pDll = NativeMethods.LoadLibraryEx(fileName, IntPtr.Zero, 1 /*DONT_RESOLVE_DLL_REFERENCES*/);
 					IntPtr descFunc = NativeMethods.GetProcAddress(pDll, "dcplugin_description");
 					IntPtr longDescFunc = NativeMethods.GetProcAddress(pDll, "dcplugin_long_description");
 					string short_description = "";
@@ -762,7 +762,7 @@ namespace dnscrypt_winclient
 		private void pluginListBox_MouseMove(object sender, MouseEventArgs e)
 		{
 			int index = pluginListBox.IndexFromPoint(this.pluginListBox.PointToClient(MousePosition));
-			if (index != this.LastPluginTooltipIndex && index < this.Plugins.Count)
+			if (index != this.LastPluginTooltipIndex && index < this.Plugins.Count && index >= 0)
 			{
 				tooltip_plugin.SetToolTip(this.pluginListBox, this.Plugins[index].shortDescription);
 				this.LastPluginTooltipIndex = index;
@@ -776,7 +776,7 @@ namespace dnscrypt_winclient
 	static class NativeMethods
 	{
 		[DllImport("kernel32.dll")]
-		public static extern IntPtr LoadLibrary(string dllToLoad);
+		public static extern IntPtr LoadLibraryEx(string dllToLoad, IntPtr reserved, long flags);
 
 		[DllImport("kernel32.dll")]
 		public static extern bool FreeLibrary(IntPtr hModule);
