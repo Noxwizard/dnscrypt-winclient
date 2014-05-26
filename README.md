@@ -11,7 +11,7 @@ Microsoft .NET Framework 2.0 or greater (http://www.microsoft.com/net/download)
 
 Running
 =======
-Zip archives containing the necessary files can be found in the /binaries directory. Unless you have issues, use the Release files.  
+The necessary files can be found in the /binaries directory. Unless you have issues, use the Release files.  
 Simply place the DNSCrypt proxy files (https://github.com/opendns/dnscrypt-proxy/downloads) in the same directory as this binary and execute the Windows client.
 
 Required DNSCrypt Proxy files
