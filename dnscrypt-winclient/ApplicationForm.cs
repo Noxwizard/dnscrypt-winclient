@@ -579,13 +579,48 @@ namespace dnscrypt_winclient
 		}
 
 		/// <summary>
+		/// Updates the buttons with new text. Cross thread function
+		/// </summary>
+		/// <param name="startstop"></param>
+		/// <param name="install"></param>
+		private void updateButtonTexts(string startstop, string install)
+		{
+			if (this.buttonInstall.InvokeRequired || this.startstop_button.InvokeRequired)
+			{
+				this.Invoke(
+					new MethodInvoker(
+						delegate()
+						{
+							updateButtonTexts(startstop, install);
+						}
+					)
+				);
+			}
+			else
+			{
+				this.startstop_button.Text = startstop;
+				this.buttonInstall.Text = install;
+			}
+		}
+
+		/// <summary>
 		/// Updates the buttons with that status of the service
 		/// </summary>
 		private void update_Service_Info()
 		{
 			while (true)
 			{
+				// Don't update the window until the window exists
+				if (!IsHandleCreated)
+				{
+					Thread.Sleep(100);
+					continue;
+				}
+
 				bool serviceExists = false;
+				string startstopText = "";
+				string installText = "";
+
 				ServiceController sc = new ServiceController("dnscrypt-proxy");
 				try
 				{
@@ -613,19 +648,19 @@ namespace dnscrypt_winclient
 					if (sc.Status == ServiceControllerStatus.Running)
 					{
 						this.CryptProcRunning = true;
-						this.startstop_button.Text = "Stop";
+						startstopText = "Stop";
 					}
 					else
 					{
 						this.CryptProcRunning = false;
-						this.startstop_button.Text = "Start";
+						startstopText = "Start";
 					}
-					this.buttonInstall.Text = "Uninstall";
+					installText = "Uninstall";
 				}
 				else
 				{
 					this.ServiceInstalled = false;
-					this.buttonInstall.Text = "Install";
+					installText = "Install";
 
 					//See if it's a standalone process running
 					if (this.CryptHandle != null)
@@ -633,20 +668,22 @@ namespace dnscrypt_winclient
 						if (this.CryptHandle.HasExited)
 						{
 							this.CryptProcRunning = false;
-							this.startstop_button.Text = "Start";
+							startstopText = "Start";
 						}
 						else
 						{
 							this.CryptProcRunning = true;
-							this.startstop_button.Text = "Stop";
+							startstopText = "Stop";
 						}
 					}
 					else
 					{
 						this.CryptProcRunning = false;
-						this.startstop_button.Text = "Start";
+						startstopText = "Start";
 					}
 				}
+				this.updateButtonTexts(startstopText, installText);
+
 				sc.Dispose();
 				Thread.Sleep(1000);
 			}
