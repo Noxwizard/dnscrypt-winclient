@@ -105,7 +105,7 @@ namespace dnscrypt_winclient
 			string pluginDirectory = Directory.GetCurrentDirectory() + "\\plugins";
 			if (Directory.Exists(pluginDirectory))
 			{
-				string[] fileEntries = Directory.GetFiles(pluginDirectory);
+				string[] fileEntries = Directory.GetFiles(pluginDirectory, "*.dll");
 				foreach (string fileName in fileEntries)
 				{
 					IntPtr pDll = NativeMethods.LoadLibrary(fileName);
