@@ -29,6 +29,7 @@ namespace dnscrypt_winclient
 		private bool ServiceInstalled = false;
 		private Thread ServiceCheck = null;
 		private int LastPluginTooltipIndex = -1;
+		private string registryRoot = "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\dnscrypt-proxy\\Parameters\\";
 
 		//A map of names to list entries so that we can rebuild the listbox and remember which items were checked
 		private Dictionary<String, Pair<NetworkListItem, bool>> NICitems = new Dictionary<string, Pair<NetworkListItem, bool>>();
@@ -91,7 +92,7 @@ namespace dnscrypt_winclient
 			LoadPlugins();
 
 			this.combobox_provider.DataSource = Providers;
-			this.combobox_provider.DisplayMember = "name";
+			this.combobox_provider.DisplayMember = "displayName";
 			LoadConfig();
 		}
 
@@ -143,50 +144,44 @@ namespace dnscrypt_winclient
 		{
 			try
 			{
-				System.Configuration.Configuration config = (Configuration)ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-				ProvidersConfigurationSection providersSection = (ProvidersConfigurationSection)config.GetSection("DNSCryptProviders");
-				if (providersSection == null)
+				// Make sure the file exists before trying to read it
+				if (!File.Exists(Directory.GetCurrentDirectory() + "\\dnscrypt-resolvers.csv"))
 				{
-					MessageBox.Show("There was an error while reading the providers list");
+					MessageBox.Show("dnscrypt-resolvers.csv was not found. It should be placed in the same directory as this program. If you do not have this file, you can find it in the download packages at http://download.dnscrypt.org/dnscrypt-proxy/", "File not found");
+					return;
 				}
-				else
-				{
-					for (int i = 0; i < providersSection.Providers.Count; i++)
-					{
-						DNSCryptProvider provider = new DNSCryptProvider();
-						provider.name = providersSection.Providers[i].Name;
-						provider.server = providersSection.Providers[i].Server;
-						provider.ipv6 = providersSection.Providers[i].Ipv6;
-						provider.parentalControls = providersSection.Providers[i].Parental;
-						provider.setPorts(providersSection.Providers[i].Ports);
-						provider.protos = providersSection.Providers[i].Protos;
-						provider.fqdn = providersSection.Providers[i].FQDN;
-						provider.key = providersSection.Providers[i].Key;
 
-						this.Providers.Add(provider);
-					}
+				CSVReader reader = new CSVReader("dnscrypt-resolvers.csv", true);
+				foreach (CSVRow CSVprovider in reader)
+				{
+					DNSCryptProvider provider = new DNSCryptProvider();
+					provider.name = CSVprovider["Name"];
+					provider.displayName = CSVprovider["Full name"];
+					provider.description = CSVprovider["Description"];
+					provider.location = CSVprovider["Location"];
+					provider.server = CSVprovider["Resolver address"];
+					provider.fqdn = CSVprovider["Provider name"];
+					provider.key = CSVprovider["Provider public key"];
+
+					this.Providers.Add(provider);
 				}
 			}
-			catch (ConfigurationErrorsException err)
+			catch (Exception err)
 			{
-				MessageBox.Show("There was an error loading the configuration file: " + err.ToString());
+				MessageBox.Show("There was an error parsing dnscrypt-resolvers.csv: " + err.ToString());
 			}
 
-			DNSCryptProvider customProvider = new DNSCryptProvider();
-			customProvider.name = "Custom";
-			this.Providers.Add(customProvider);
-
-			//Load the custom settings if they were set last time
-			if (dnscrypt_winclient.Properties.Settings.Default.custom_enabled)
+			// Load the last used resolver
+			string resolver = (string)Registry.GetValue(this.registryRoot, "ResolverName", "");
+			int resolverIndex = -1;
+			if (resolver != null && resolver.Length > 0)
 			{
-				for (int i = 0; i < this.combobox_provider.Items.Count; i++)
-				{
-					if (((DNSCryptProvider)this.combobox_provider.Items[i]).name == "Custom")
-					{
-						populate_Config_Form(i);
-						break;
-					}
-				}
+				resolverIndex = this.combobox_provider.FindString(resolver);
+			}
+
+			if (resolverIndex != -1)
+			{
+				populate_Config_Form(resolverIndex);
 			}
 			else
 			{
@@ -199,7 +194,7 @@ namespace dnscrypt_winclient
 		/// </summary>
 		private void GetNICs(Boolean showHidden)
 		{
-			this.ipv6Radio.Enabled = false;
+			//this.ipv6Radio.Enabled = false;
 
 			//NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
 			foreach (KeyValuePair<String, Pair<NetworkListItem, bool>> adapterEntry in this.NICitems)
@@ -211,7 +206,7 @@ namespace dnscrypt_winclient
 					//See if the device supports IPv6 and enable the option if so
 					if (adapterEntry.Value.First.IPv6)
 					{
-						this.ipv6Radio.Enabled = true;
+						//this.ipv6Radio.Enabled = true;
 					}
 				}
 			}
@@ -298,21 +293,7 @@ namespace dnscrypt_winclient
 					this.CryptProc = new ProcessStartInfo();
 					this.CryptProc.FileName = "dnscrypt-proxy.exe";
 					this.CryptProc.WindowStyle = ProcessWindowStyle.Minimized;
-
-					if (this.protoTCP.Checked)
-					{
-						this.CryptProc.Arguments = "--tcp-only";
-					}
-
-					if (this.ipv6Radio.Checked)
-					{
-						this.CryptProc.Arguments += " --resolver-address=[" + this.textbox_server_addr.Text + "]";
-					}
-					else
-					{
-						this.CryptProc.Arguments += " --resolver-address=" + this.textbox_server_addr.Text;
-					}
-					this.CryptProc.Arguments += ":" + this.portBox.SelectedItem.ToString();
+					this.CryptProc.Arguments += " --resolver-address=" + this.textbox_server_addr.Text;
 
 					if (this.gatewayCheckbox.Checked)
 					{
@@ -378,28 +359,16 @@ namespace dnscrypt_winclient
 
 		private bool updateRegistry()
 		{
-			string root = "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\dnscrypt-proxy\\Parameters\\";
 
 			try
 			{
-				Registry.SetValue(root, "Plugins", new string[] {}, RegistryValueKind.MultiString);
-				Registry.SetValue(root, "LocalAddress", "127.0.0.1", RegistryValueKind.String);
-				Registry.SetValue(root, "ProviderKey", this.textbox_key.Text, RegistryValueKind.String);
-				Registry.SetValue(root, "ProviderName", this.textbox_fqdn.Text, RegistryValueKind.String);
-
-				if (this.ipv6Radio.Checked)
-				{
-					Registry.SetValue(root, "ResolverAddress", "[" + this.textbox_server_addr.Text + "]:" + this.portBox.SelectedItem.ToString(), RegistryValueKind.String);
-				}
-				else
-				{
-					Registry.SetValue(root, "ResolverAddress", this.textbox_server_addr.Text + ":" + this.portBox.SelectedItem.ToString(), RegistryValueKind.String);
-				}
-
-				if (this.protoTCP.Checked)
-				{
-					Registry.SetValue(root, "TCPOnly", 1, RegistryValueKind.DWord);
-				}
+				Registry.SetValue(this.registryRoot, "Plugins", new string[] {}, RegistryValueKind.MultiString);
+				Registry.SetValue(this.registryRoot, "LocalAddress", "127.0.0.1", RegistryValueKind.String);
+				Registry.SetValue(this.registryRoot, "ProviderKey", this.textbox_key.Text, RegistryValueKind.String);
+				Registry.SetValue(this.registryRoot, "ProviderName", this.textbox_fqdn.Text, RegistryValueKind.String);
+				Registry.SetValue(this.registryRoot, "ResolverAddress", this.textbox_server_addr.Text, RegistryValueKind.String);
+				Registry.SetValue(this.registryRoot, "ResolverName", this.Providers[this.combobox_provider.SelectedIndex].name, RegistryValueKind.String);
+				Registry.SetValue(this.registryRoot, "ResolverList", Directory.GetCurrentDirectory() + "\\dnscrypt-resolvers.csv", RegistryValueKind.String);
 			}
 			catch (Exception e)
 			{
@@ -693,58 +662,6 @@ namespace dnscrypt_winclient
 		}
 
 		/// <summary>
-		/// Cycles through IPv4 and IPv6 addresses if a provider has both
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void ipRadios_CheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton radio = (RadioButton) sender;
-
-			//Only process events for when a radio button becomes checked, not unchecked
-			if (!radio.Checked)
-			{
-				return;
-			}
-
-			int index = this.combobox_provider.SelectedIndex;
-			if (this.Providers[index].name == "Custom")
-			{
-				return;
-			}
-
-			if (radio.Name == "ipv4Radio" && this.Providers[index].server != "")
-			{
-				this.textbox_server_addr.Text = this.Providers[index].server;
-			}
-			else if (radio.Name == "ipv6Radio" && this.Providers[index].ipv6 != "")
-			{
-				this.textbox_server_addr.Text = this.Providers[index].ipv6;
-			}
-			else if (radio.Name == "parentalControlsRadio" && this.Providers[index].parentalControls != "")
-			{
-				this.textbox_server_addr.Text = this.Providers[index].parentalControls;
-			}
-		}
-
-		/// <summary>
-		/// Saves the custom settings to disk
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void button_save_Click(object sender, EventArgs e)
-		{
-			Properties.Settings.Default.custom_ipv4 = this.ipv4Radio.Checked;
-			Properties.Settings.Default.custom_server = this.textbox_server_addr.Text;
-			Properties.Settings.Default.custom_fqdn = this.textbox_fqdn.Text;
-			Properties.Settings.Default.custom_key = this.textbox_key.Text;
-			Properties.Settings.Default.custom_port = Int32.Parse(this.portBox.Text);
-			Properties.Settings.Default.custom_proto = (this.protoUDP.Checked ? "udp" : "tcp");
-			Properties.Settings.Default.custom_enabled = true;
-			Properties.Settings.Default.Save();
-		}
-
-		/// <summary>
 		/// Populates the config tab's fields with information about the selected provider
 		/// </summary>
 		/// <param name="index">Index into the provider array</param>
@@ -758,99 +675,15 @@ namespace dnscrypt_winclient
 			this.textbox_fqdn.Text = "";
 			this.textbox_key.ReadOnly = false;
 			this.textbox_key.Text = "";
-			this.portBox.Items.Clear();
-			this.ipv4Radio.Enabled = true;
-			this.ipv6Radio.Enabled = true;
-			this.parentalControlsRadio.Enabled = false;
-			this.protoTCP.Enabled = true;
-			this.protoTCP.Checked = false;
-			this.protoUDP.Enabled = true;
-			this.protoUDP.Checked = true;
-			this.button_save.Enabled = false;
 
-			if (this.Providers[index].name == "Custom")
-			{
-				this.button_save.Enabled = true;
+			this.textbox_server_addr.Text = this.Providers[index].server;
+			this.textbox_server_addr.ReadOnly = true;
 
-				this.textbox_server_addr.Text = Properties.Settings.Default.custom_server;
-				this.textbox_fqdn.Text = Properties.Settings.Default.custom_fqdn;
-				this.textbox_key.Text = Properties.Settings.Default.custom_key;
-				this.portBox.Text = Properties.Settings.Default.custom_port.ToString();
+			this.textbox_fqdn.Text = this.Providers[index].fqdn;
+			this.textbox_fqdn.ReadOnly = true;
 
-				if (Properties.Settings.Default.custom_proto == "tcp")
-				{
-					this.protoTCP.Select();
-				}
-				else
-				{
-					this.protoUDP.Select();
-				}
-
-				if (Properties.Settings.Default.custom_ipv4)
-				{
-					this.ipv4Radio.Checked = true;
-				}
-				else
-				{
-					this.ipv6Radio.Checked = true;
-				}
-
-				Properties.Settings.Default.custom_enabled = true;
-			}
-			else
-			{
-				this.textbox_server_addr.Text = this.Providers[index].server;
-				this.textbox_server_addr.ReadOnly = true;
-
-				this.textbox_fqdn.Text = this.Providers[index].fqdn;
-				this.textbox_fqdn.ReadOnly = true;
-
-				this.textbox_key.Text = this.Providers[index].key;
-				this.textbox_key.ReadOnly = true;
-
-				foreach (int port in this.Providers[index].ports)
-				{
-					this.portBox.Items.Add(port);
-				}
-				this.portBox.SelectedIndex = 0;
-
-				if (this.Providers[index].server == "")
-				{
-					this.ipv4Radio.Enabled = false;
-				}
-				else
-				{
-					this.ipv4Radio.Select();
-				}
-
-				if (this.Providers[index].ipv6 == "")
-				{
-					this.ipv6Radio.Enabled = false;
-				}
-				else if (!this.ipv4Radio.Enabled)
-				{
-					this.ipv6Radio.Select();
-				}
-
-				if (!this.Providers[index].protos.Contains("udp"))
-				{
-					this.protoUDP.Enabled = false;
-					this.protoTCP.Select();
-				}
-
-				if (!this.Providers[index].protos.Contains("tcp"))
-				{
-					this.protoTCP.Enabled = false;
-				}
-
-				if (this.Providers[index].parentalControls != "")
-				{
-					this.parentalControlsRadio.Enabled = true;
-				}
-
-				Properties.Settings.Default.custom_enabled = false;
-			}
-			Properties.Settings.Default.Save();
+			this.textbox_key.Text = this.Providers[index].key;
+			this.textbox_key.ReadOnly = true;
 		}
 
 		/// <summary>
@@ -1011,7 +844,10 @@ namespace dnscrypt_winclient
 	/// </summary>
 	public class DNSCryptProvider
 	{
-		public string name { get; set; }
+		public string name;
+		public string displayName { get; set; }
+		public string description;
+		public string location;
 		public string server;
 		public string ipv6;
 		public string parentalControls;

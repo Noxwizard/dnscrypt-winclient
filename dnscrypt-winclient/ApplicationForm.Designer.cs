@@ -37,30 +37,19 @@
 			this.notifyIconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.notifyIconContextOpen = new System.Windows.Forms.ToolStripMenuItem();
 			this.notifyIconContextExit = new System.Windows.Forms.ToolStripMenuItem();
-			this.portBox = new System.Windows.Forms.ComboBox();
-			this.protoUDP = new System.Windows.Forms.RadioButton();
-			this.protoTCP = new System.Windows.Forms.RadioButton();
-			this.label3 = new System.Windows.Forms.Label();
 			this.hideAdaptersCheckbox = new System.Windows.Forms.CheckBox();
 			this.gatewayCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabNICs = new System.Windows.Forms.TabPage();
 			this.tabConfig = new System.Windows.Forms.TabPage();
-			this.button_save = new System.Windows.Forms.Button();
 			this.label6 = new System.Windows.Forms.Label();
 			this.combobox_provider = new System.Windows.Forms.ComboBox();
 			this.label5 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
 			this.textbox_key = new System.Windows.Forms.TextBox();
-			this.panel2 = new System.Windows.Forms.Panel();
 			this.textbox_fqdn = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.textbox_server_addr = new System.Windows.Forms.TextBox();
 			this.autostartCheckBox = new System.Windows.Forms.CheckBox();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.ipv4Radio = new System.Windows.Forms.RadioButton();
-			this.ipv6Radio = new System.Windows.Forms.RadioButton();
-			this.parentalControlsRadio = new System.Windows.Forms.RadioButton();
 			this.tabPlugins = new System.Windows.Forms.TabPage();
 			this.button_plugins_refresh = new System.Windows.Forms.Button();
 			this.pluginDescriptionTextBox = new System.Windows.Forms.TextBox();
@@ -73,14 +62,14 @@
 			this.buttonInstall = new System.Windows.Forms.Button();
 			this.serviceTooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.tooltip_plugin = new System.Windows.Forms.ToolTip(this.components);
+			this.providerGroupBox = new System.Windows.Forms.GroupBox();
 			this.notifyIconContextMenu.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabNICs.SuspendLayout();
 			this.tabConfig.SuspendLayout();
-			this.panel2.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.tabPlugins.SuspendLayout();
 			this.tabAbout.SuspendLayout();
+			this.providerGroupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// DNSlistbox
@@ -146,49 +135,6 @@
 			this.notifyIconContextExit.Text = "Exit";
 			this.notifyIconContextExit.Click += new System.EventHandler(this.notifyIcon_Exit);
 			// 
-			// portBox
-			// 
-			this.portBox.FormattingEnabled = true;
-			this.portBox.Items.AddRange(new object[] {
-            "53",
-            "443",
-            "5353"});
-			this.portBox.Location = new System.Drawing.Point(337, 114);
-			this.portBox.Name = "portBox";
-			this.portBox.Size = new System.Drawing.Size(59, 21);
-			this.portBox.TabIndex = 6;
-			// 
-			// protoUDP
-			// 
-			this.protoUDP.AutoSize = true;
-			this.protoUDP.Checked = true;
-			this.protoUDP.Location = new System.Drawing.Point(3, 4);
-			this.protoUDP.Name = "protoUDP";
-			this.protoUDP.Size = new System.Drawing.Size(48, 17);
-			this.protoUDP.TabIndex = 7;
-			this.protoUDP.TabStop = true;
-			this.protoUDP.Text = "UDP";
-			this.protoUDP.UseVisualStyleBackColor = true;
-			// 
-			// protoTCP
-			// 
-			this.protoTCP.AutoSize = true;
-			this.protoTCP.Location = new System.Drawing.Point(51, 4);
-			this.protoTCP.Name = "protoTCP";
-			this.protoTCP.Size = new System.Drawing.Size(46, 17);
-			this.protoTCP.TabIndex = 8;
-			this.protoTCP.Text = "TCP";
-			this.protoTCP.UseVisualStyleBackColor = true;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(302, 117);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(29, 13);
-			this.label3.TabIndex = 10;
-			this.label3.Text = "Port:";
-			// 
 			// hideAdaptersCheckbox
 			// 
 			this.hideAdaptersCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -245,21 +191,9 @@
 			// 
 			// tabConfig
 			// 
-			this.tabConfig.Controls.Add(this.button_save);
-			this.tabConfig.Controls.Add(this.label6);
-			this.tabConfig.Controls.Add(this.combobox_provider);
-			this.tabConfig.Controls.Add(this.label5);
-			this.tabConfig.Controls.Add(this.label4);
-			this.tabConfig.Controls.Add(this.textbox_key);
-			this.tabConfig.Controls.Add(this.panel2);
-			this.tabConfig.Controls.Add(this.textbox_fqdn);
-			this.tabConfig.Controls.Add(this.label2);
-			this.tabConfig.Controls.Add(this.textbox_server_addr);
+			this.tabConfig.Controls.Add(this.providerGroupBox);
 			this.tabConfig.Controls.Add(this.autostartCheckBox);
-			this.tabConfig.Controls.Add(this.panel1);
-			this.tabConfig.Controls.Add(this.portBox);
 			this.tabConfig.Controls.Add(this.gatewayCheckbox);
-			this.tabConfig.Controls.Add(this.label3);
 			this.tabConfig.Location = new System.Drawing.Point(4, 22);
 			this.tabConfig.Name = "tabConfig";
 			this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
@@ -268,20 +202,10 @@
 			this.tabConfig.Text = "Config";
 			this.tabConfig.UseVisualStyleBackColor = true;
 			// 
-			// button_save
-			// 
-			this.button_save.Location = new System.Drawing.Point(6, 36);
-			this.button_save.Name = "button_save";
-			this.button_save.Size = new System.Drawing.Size(75, 23);
-			this.button_save.TabIndex = 27;
-			this.button_save.Text = "Save";
-			this.button_save.UseVisualStyleBackColor = true;
-			this.button_save.Click += new System.EventHandler(this.button_save_Click);
-			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(139, 91);
+			this.label6.Location = new System.Drawing.Point(30, 104);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(60, 13);
 			this.label6.TabIndex = 25;
@@ -291,57 +215,41 @@
 			// 
 			this.combobox_provider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.combobox_provider.FormattingEnabled = true;
-			this.combobox_provider.Location = new System.Drawing.Point(6, 9);
+			this.combobox_provider.Location = new System.Drawing.Point(11, 19);
 			this.combobox_provider.Name = "combobox_provider";
-			this.combobox_provider.Size = new System.Drawing.Size(111, 21);
+			this.combobox_provider.Size = new System.Drawing.Size(375, 21);
 			this.combobox_provider.TabIndex = 26;
 			this.combobox_provider.SelectionChangeCommitted += new System.EventHandler(this.combobox_provider_SelectionChangeCommitted);
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(122, 65);
+			this.label5.Location = new System.Drawing.Point(13, 78);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(77, 13);
 			this.label5.TabIndex = 24;
 			this.label5.Text = "Name (FQDN):";
 			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(253, 148);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(49, 13);
-			this.label4.TabIndex = 19;
-			this.label4.Text = "Protocol:";
-			// 
 			// textbox_key
 			// 
-			this.textbox_key.Location = new System.Drawing.Point(205, 88);
+			this.textbox_key.Location = new System.Drawing.Point(96, 101);
 			this.textbox_key.Name = "textbox_key";
-			this.textbox_key.Size = new System.Drawing.Size(191, 20);
+			this.textbox_key.ReadOnly = true;
+			this.textbox_key.Size = new System.Drawing.Size(290, 20);
 			this.textbox_key.TabIndex = 23;
-			// 
-			// panel2
-			// 
-			this.panel2.Controls.Add(this.protoUDP);
-			this.panel2.Controls.Add(this.protoTCP);
-			this.panel2.Location = new System.Drawing.Point(305, 141);
-			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(93, 27);
-			this.panel2.TabIndex = 18;
 			// 
 			// textbox_fqdn
 			// 
-			this.textbox_fqdn.Location = new System.Drawing.Point(205, 62);
+			this.textbox_fqdn.Location = new System.Drawing.Point(96, 75);
 			this.textbox_fqdn.Name = "textbox_fqdn";
-			this.textbox_fqdn.Size = new System.Drawing.Size(191, 20);
+			this.textbox_fqdn.ReadOnly = true;
+			this.textbox_fqdn.Size = new System.Drawing.Size(290, 20);
 			this.textbox_fqdn.TabIndex = 22;
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(117, 39);
+			this.label2.Location = new System.Drawing.Point(8, 52);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(82, 13);
 			this.label2.TabIndex = 21;
@@ -349,9 +257,10 @@
 			// 
 			// textbox_server_addr
 			// 
-			this.textbox_server_addr.Location = new System.Drawing.Point(205, 36);
+			this.textbox_server_addr.Location = new System.Drawing.Point(96, 49);
 			this.textbox_server_addr.Name = "textbox_server_addr";
-			this.textbox_server_addr.Size = new System.Drawing.Size(191, 20);
+			this.textbox_server_addr.ReadOnly = true;
+			this.textbox_server_addr.Size = new System.Drawing.Size(290, 20);
 			this.textbox_server_addr.TabIndex = 20;
 			// 
 			// autostartCheckBox
@@ -368,51 +277,6 @@
 			this.autostartCheckBox.TabIndex = 15;
 			this.autostartCheckBox.Text = "Start service when Windows starts";
 			this.autostartCheckBox.UseVisualStyleBackColor = true;
-			// 
-			// panel1
-			// 
-			this.panel1.Controls.Add(this.ipv4Radio);
-			this.panel1.Controls.Add(this.ipv6Radio);
-			this.panel1.Controls.Add(this.parentalControlsRadio);
-			this.panel1.Location = new System.Drawing.Point(178, 6);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(218, 24);
-			this.panel1.TabIndex = 16;
-			// 
-			// ipv4Radio
-			// 
-			this.ipv4Radio.AutoSize = true;
-			this.ipv4Radio.Checked = true;
-			this.ipv4Radio.Location = new System.Drawing.Point(4, 3);
-			this.ipv4Radio.Name = "ipv4Radio";
-			this.ipv4Radio.Size = new System.Drawing.Size(47, 17);
-			this.ipv4Radio.TabIndex = 0;
-			this.ipv4Radio.TabStop = true;
-			this.ipv4Radio.Text = "IPv4";
-			this.ipv4Radio.UseVisualStyleBackColor = true;
-			this.ipv4Radio.CheckedChanged += new System.EventHandler(this.ipRadios_CheckedChanged);
-			// 
-			// ipv6Radio
-			// 
-			this.ipv6Radio.AutoSize = true;
-			this.ipv6Radio.Location = new System.Drawing.Point(57, 3);
-			this.ipv6Radio.Name = "ipv6Radio";
-			this.ipv6Radio.Size = new System.Drawing.Size(47, 17);
-			this.ipv6Radio.TabIndex = 1;
-			this.ipv6Radio.Text = "IPv6";
-			this.ipv6Radio.UseVisualStyleBackColor = true;
-			this.ipv6Radio.CheckedChanged += new System.EventHandler(this.ipRadios_CheckedChanged);
-			// 
-			// parentalControlsRadio
-			// 
-			this.parentalControlsRadio.AutoSize = true;
-			this.parentalControlsRadio.Location = new System.Drawing.Point(110, 3);
-			this.parentalControlsRadio.Name = "parentalControlsRadio";
-			this.parentalControlsRadio.Size = new System.Drawing.Size(104, 17);
-			this.parentalControlsRadio.TabIndex = 2;
-			this.parentalControlsRadio.Text = "Parental controls";
-			this.parentalControlsRadio.UseVisualStyleBackColor = true;
-			this.parentalControlsRadio.CheckedChanged += new System.EventHandler(this.ipRadios_CheckedChanged);
 			// 
 			// tabPlugins
 			// 
@@ -524,6 +388,22 @@
 			this.buttonInstall.Click += new System.EventHandler(this.buttonInstall_Click);
 			this.buttonInstall.MouseHover += new System.EventHandler(this.buttonInstall_MouseHover);
 			// 
+			// providerGroupBox
+			// 
+			this.providerGroupBox.Controls.Add(this.combobox_provider);
+			this.providerGroupBox.Controls.Add(this.textbox_key);
+			this.providerGroupBox.Controls.Add(this.label6);
+			this.providerGroupBox.Controls.Add(this.textbox_fqdn);
+			this.providerGroupBox.Controls.Add(this.textbox_server_addr);
+			this.providerGroupBox.Controls.Add(this.label5);
+			this.providerGroupBox.Controls.Add(this.label2);
+			this.providerGroupBox.Location = new System.Drawing.Point(6, 6);
+			this.providerGroupBox.Name = "providerGroupBox";
+			this.providerGroupBox.Size = new System.Drawing.Size(392, 137);
+			this.providerGroupBox.TabIndex = 27;
+			this.providerGroupBox.TabStop = false;
+			this.providerGroupBox.Text = "Select Provider";
+			// 
 			// ApplicationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -545,13 +425,11 @@
 			this.tabNICs.PerformLayout();
 			this.tabConfig.ResumeLayout(false);
 			this.tabConfig.PerformLayout();
-			this.panel2.ResumeLayout(false);
-			this.panel2.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.tabPlugins.ResumeLayout(false);
 			this.tabPlugins.PerformLayout();
 			this.tabAbout.ResumeLayout(false);
+			this.providerGroupBox.ResumeLayout(false);
+			this.providerGroupBox.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -565,10 +443,6 @@
 		private System.Windows.Forms.ContextMenuStrip notifyIconContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem notifyIconContextOpen;
 		private System.Windows.Forms.ToolStripMenuItem notifyIconContextExit;
-		private System.Windows.Forms.ComboBox portBox;
-		private System.Windows.Forms.RadioButton protoUDP;
-		private System.Windows.Forms.RadioButton protoTCP;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.CheckBox hideAdaptersCheckbox;
 		private System.Windows.Forms.CheckBox gatewayCheckbox;
 		private System.Windows.Forms.TabControl tabControl1;
@@ -580,8 +454,6 @@
 		private System.Windows.Forms.CheckBox autostartCheckBox;
 		private System.Windows.Forms.TabPage tabAbout;
 		private System.Windows.Forms.RichTextBox richTextBox1;
-		private System.Windows.Forms.Panel panel2;
-		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.TextBox textbox_plugin_params;
@@ -594,13 +466,9 @@
 		private System.Windows.Forms.TextBox textbox_fqdn;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox textbox_server_addr;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.RadioButton ipv4Radio;
-		private System.Windows.Forms.RadioButton ipv6Radio;
-		private System.Windows.Forms.RadioButton parentalControlsRadio;
 		private System.Windows.Forms.ComboBox combobox_provider;
-		private System.Windows.Forms.Button button_save;
 		private System.Windows.Forms.ToolTip tooltip_plugin;
+		private System.Windows.Forms.GroupBox providerGroupBox;
 	}
 }
 
