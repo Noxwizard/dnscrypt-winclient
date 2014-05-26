@@ -87,8 +87,6 @@ namespace dnscrypt_winclient
 			this.ServiceCheck = new Thread(new ThreadStart(this.update_Service_Info));
 			this.ServiceCheck.Start();
 
-			this.pluginListBox.DataSource = Plugins;
-			this.pluginListBox.DisplayMember = "name";
 			LoadPlugins();
 
 			this.combobox_provider.DataSource = Providers;
@@ -101,6 +99,9 @@ namespace dnscrypt_winclient
 		/// </summary>
 		private void LoadPlugins()
 		{
+			this.Plugins.Clear();
+			this.pluginListBox.Items.Clear();
+
 			string pluginDirectory = Directory.GetCurrentDirectory() + "\\plugins";
 			if (Directory.Exists(pluginDirectory))
 			{
@@ -132,6 +133,7 @@ namespace dnscrypt_winclient
 					if (descFunc != IntPtr.Zero || longDescFunc != IntPtr.Zero)
 					{
 						this.Plugins.Add(new PluginListItem(Path.GetFileName(fileName), short_description, long_description));
+						this.pluginListBox.Items.Add(Path.GetFileName(fileName));
 					}
 				}
 			}
