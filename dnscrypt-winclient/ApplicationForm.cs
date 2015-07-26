@@ -103,38 +103,42 @@ namespace dnscrypt_winclient
 			this.pluginListBox.Items.Clear();
 
 			string pluginDirectory = Directory.GetCurrentDirectory() + "\\plugins";
-			if (Directory.Exists(pluginDirectory))
+
+			// DNSCrypt 1.6.0 moved plugins to the root directory
+			if (!Directory.Exists(pluginDirectory))
 			{
-				string[] fileEntries = Directory.GetFiles(pluginDirectory, "*.dll");
-				foreach (string fileName in fileEntries)
+				pluginDirectory = Directory.GetCurrentDirectory();
+			}
+
+			string[] fileEntries = Directory.GetFiles(pluginDirectory, "*.dll");
+			foreach (string fileName in fileEntries)
+			{
+				IntPtr pDll = NativeMethods.LoadLibraryEx(fileName, IntPtr.Zero, 1 /*DONT_RESOLVE_DLL_REFERENCES*/);
+				IntPtr descFunc = NativeMethods.GetProcAddress(pDll, "dcplugin_description");
+				IntPtr longDescFunc = NativeMethods.GetProcAddress(pDll, "dcplugin_long_description");
+				string short_description = "";
+				string long_description = "";
+
+				if (descFunc != IntPtr.Zero)
 				{
-					IntPtr pDll = NativeMethods.LoadLibraryEx(fileName, IntPtr.Zero, 1 /*DONT_RESOLVE_DLL_REFERENCES*/);
-					IntPtr descFunc = NativeMethods.GetProcAddress(pDll, "dcplugin_description");
-					IntPtr longDescFunc = NativeMethods.GetProcAddress(pDll, "dcplugin_long_description");
-					string short_description = "";
-					string long_description = "";
+					dcplugin_description dcplugin_description = (dcplugin_description)Marshal.GetDelegateForFunctionPointer(descFunc, typeof(dcplugin_description));
 
-					if (descFunc != IntPtr.Zero)
-					{
-						dcplugin_description dcplugin_description = (dcplugin_description)Marshal.GetDelegateForFunctionPointer(descFunc, typeof(dcplugin_description));
+					IntPtr strPtr = dcplugin_description(IntPtr.Zero);
+					short_description = Marshal.PtrToStringAnsi(strPtr);
+				}
 
-						IntPtr strPtr = dcplugin_description(IntPtr.Zero);
-						short_description = Marshal.PtrToStringAnsi(strPtr);
-					}
+				if (longDescFunc != IntPtr.Zero)
+				{
+					dcplugin_long_description dcplugin_long_description = (dcplugin_long_description)Marshal.GetDelegateForFunctionPointer(longDescFunc, typeof(dcplugin_long_description));
 
-					if (longDescFunc != IntPtr.Zero)
-					{
-						dcplugin_long_description dcplugin_long_description = (dcplugin_long_description)Marshal.GetDelegateForFunctionPointer(longDescFunc, typeof(dcplugin_long_description));
+					IntPtr strPtr = dcplugin_long_description(IntPtr.Zero);
+					long_description = Marshal.PtrToStringAnsi(strPtr);
+				}
 
-						IntPtr strPtr = dcplugin_long_description(IntPtr.Zero);
-						long_description = Marshal.PtrToStringAnsi(strPtr);
-					}
-
-					if (descFunc != IntPtr.Zero || longDescFunc != IntPtr.Zero)
-					{
-						this.Plugins.Add(new PluginListItem(Path.GetFileName(fileName), short_description, long_description));
-						this.pluginListBox.Items.Add(Path.GetFileName(fileName));
-					}
+				if (descFunc != IntPtr.Zero || longDescFunc != IntPtr.Zero)
+				{
+					this.Plugins.Add(new PluginListItem(Path.GetFileName(fileName), short_description, long_description));
+					this.pluginListBox.Items.Add(Path.GetFileName(fileName));
 				}
 			}
 		}

@@ -7,7 +7,7 @@ The purpose of this application is to allow the user to have a better experience
 Requirements
 ============
 DNSCrypt Proxy 1.4.0 or greater (http://download.dnscrypt.org/dnscrypt-proxy/)  
-Microsoft .NET Framework 2.0 or greater (http://www.microsoft.com/net/download)
+Microsoft .NET Framework 2.0 or greater (http://www.microsoft.com/net)
 
 Running
 =======
@@ -16,7 +16,8 @@ Simply place the DNSCrypt proxy files (https://github.com/opendns/dnscrypt-proxy
 
 Required DNSCrypt Proxy files
 -----------------------------
-The contents of the /bin directory
+DNSCrypt 1.4.0: The contents of the /bin directory
+DNSCrypt 1.6.0+: There is no longer a folder separation, just place everything in one directory
 
 Features
 ========
