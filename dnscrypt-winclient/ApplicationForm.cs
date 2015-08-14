@@ -182,7 +182,14 @@ namespace dnscrypt_winclient
 			int resolverIndex = -1;
 			if (resolver != null && resolver.Length > 0)
 			{
-				resolverIndex = this.combobox_provider.FindString(resolver);
+			    for (int index = 0; index < combobox_provider.Items.Count; index++)
+			    {
+			        DNSCryptProvider provider = (DNSCryptProvider)combobox_provider.Items[index];
+			        if (provider.name.Equals(resolver))
+			        {
+			            resolverIndex = index;
+			        }
+			    }
 			}
 
 			if (resolverIndex != -1)
@@ -396,7 +403,8 @@ namespace dnscrypt_winclient
 			//Do not revert settings if installed as a service and it is running
 			if (this.ServiceInstalled && this.CryptProcRunning)
 			{
-				return;
+                this.ServiceCheck.Abort();
+                return;
 			}
 
 			//Revert all of the DNS server settings
@@ -592,22 +600,22 @@ namespace dnscrypt_winclient
 		/// <param name="install"></param>
 		private void updateButtonTexts(string startstop, string install)
 		{
-			if (this.buttonInstall.InvokeRequired || this.startstop_button.InvokeRequired)
-			{
-				this.Invoke(
-					new MethodInvoker(
-						delegate()
-						{
-							updateButtonTexts(startstop, install);
-						}
-					)
-				);
-			}
-			else
-			{
-				this.startstop_button.Text = startstop;
-				this.buttonInstall.Text = install;
-			}
+		    if (this.buttonInstall.InvokeRequired || this.startstop_button.InvokeRequired)
+		    {
+		        this.Invoke(
+		            new MethodInvoker(
+		                delegate()
+		                {
+		                    updateButtonTexts(startstop, install);
+		                }
+		                )
+		            );
+		    }
+		    else
+		    {
+		        this.startstop_button.Text = startstop;
+		        this.buttonInstall.Text = install;
+		    }
 		}
 
 		/// <summary>
@@ -847,7 +855,8 @@ namespace dnscrypt_winclient
 				"VirtualBox",
 				"Software Loopback",
 				"Microsoft ISATAP",
-				"Teredo Tunneling Pseudo-Interface"
+                "Microsoft-ISATAP",
+                "Teredo Tunneling Pseudo-Interface"
 			};
 
 			foreach (string entry in blacklist)

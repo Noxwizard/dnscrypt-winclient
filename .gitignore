@@ -5,3 +5,4 @@
 /dnscrypt-winclient/bin/Release/*
 /dnscrypt-winclient/obj/*
 /dnscrypt-winclient/*.user
+.vs/dnscrypt-winclient/v14/.suo
