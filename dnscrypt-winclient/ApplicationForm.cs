@@ -847,7 +847,8 @@ namespace dnscrypt_winclient
 				"VirtualBox",
 				"Software Loopback",
 				"Microsoft ISATAP",
-				"Teredo Tunneling Pseudo-Interface"
+                "Microsoft-ISATAP",
+                "Teredo Tunneling Pseudo-Interface"
 			};
 
 			foreach (string entry in blacklist)
