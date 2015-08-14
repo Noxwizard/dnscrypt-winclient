@@ -182,7 +182,14 @@ namespace dnscrypt_winclient
 			int resolverIndex = -1;
 			if (resolver != null && resolver.Length > 0)
 			{
-				resolverIndex = this.combobox_provider.FindString(resolver);
+			    for (int index = 0; index < combobox_provider.Items.Count; index++)
+			    {
+			        DNSCryptProvider provider = (DNSCryptProvider)combobox_provider.Items[index];
+			        if (provider.name.Equals(resolver))
+			        {
+			            resolverIndex = index;
+			        }
+			    }
 			}
 
 			if (resolverIndex != -1)
