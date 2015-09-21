@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Management;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -33,6 +34,7 @@ namespace dnscrypt_winclient
 
 		//A map of names to list entries so that we can rebuild the listbox and remember which items were checked
 		private Dictionary<String, Pair<NetworkListItem, bool>> NICitems = new Dictionary<string, Pair<NetworkListItem, bool>>();
+		private Dictionary<String, ManagementObject> hardwareInfo = new Dictionary<string, ManagementObject>();
 
 		private BindingList<DNSCryptProvider> Providers = new BindingList<DNSCryptProvider>();
 		private List<PluginListItem> Plugins = new List<PluginListItem>();
@@ -57,6 +59,13 @@ namespace dnscrypt_winclient
 			InitializeComponent();
 			SendMessage(this.buttonInstall.Handle, BCM_SETSHIELD, 0, 1);
 
+			//Pull hardware information for all NICs
+			ManagementObjectSearcher s = new ManagementObjectSearcher("SELECT * FROM Win32_NetworkAdapter");
+			foreach (ManagementObject service in s.Get())
+			{
+				this.hardwareInfo[service.Properties["Name"].Value.ToString()] = service;
+			}
+
 			//Fetch the NIC information once
 			NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
 			foreach (NetworkInterface adapter in adapters)
@@ -77,7 +86,7 @@ namespace dnscrypt_winclient
 				dnsServers = NetworkManager.getDNS(adapter.Id);
 				dnsServersv6 = NetworkManager.getDNSv6(adapter.Id);
 
-				NetworkListItem item = new NetworkListItem(adapter.Name, adapter.Description, dnsServers, dnsServersv6, adapter.Supports(NetworkInterfaceComponent.IPv4), adapter.Supports(NetworkInterfaceComponent.IPv6));
+				NetworkListItem item = new NetworkListItem(adapter.Name, adapter.Description, dnsServers, dnsServersv6, adapter.Supports(NetworkInterfaceComponent.IPv4), adapter.Supports(NetworkInterfaceComponent.IPv6), this.shouldHide(adapter));
 				NICitems.Add(adapter.Name, new Pair<NetworkListItem, bool>(item, false));
 			}
 
@@ -216,6 +225,42 @@ namespace dnscrypt_winclient
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Returns if a device should be flagged as hidden or not.
+		/// Adapters such as Hamachi or virtual machines typically have their own settings
+		/// which you should rarely ever need to change.
+		/// </summary>
+		/// <param name="adapter">Network Interface object</param>
+		private Boolean shouldHide(NetworkInterface adapter)
+		{
+			string[] blacklist = {
+				"ISATAP",
+				"TEREDO",
+				"6TO4MP",
+				"VMWARE",
+				"ROOT\\NET\\",	//Default PNP ID for devices that don't have their own. Hamachi, OpenVPN, and Virtualbox use this.
+			};
+
+			if (this.hardwareInfo.ContainsKey(adapter.Description))
+			{
+				foreach (string entry in blacklist)
+				{
+					if (this.hardwareInfo[adapter.Description].Properties["PNPDeviceID"].Value.ToString().Contains(entry))
+					{
+						return true;
+					}
+				}
+			}
+
+			//Loopback adapters do not have a PnP entry
+			if (adapter.Name.Contains("Loopback"))
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -802,7 +847,7 @@ namespace dnscrypt_winclient
 		public Boolean IPv6 = false;
 		public Boolean hidden = false;
 
-		public NetworkListItem(String Name, String Description, List<string> IPs, List<string> IPsv6, Boolean IPv4, Boolean IPv6)
+		public NetworkListItem(String Name, String Description, List<string> IPs, List<string> IPsv6, Boolean IPv4, Boolean IPv6, Boolean hide)
 		{
 			this.NICName = Name;
 			this.NICDescription = Description;
@@ -810,11 +855,7 @@ namespace dnscrypt_winclient
 			this.DNSserversv6 = IPsv6;
 			this.IPv4 = IPv4;
 			this.IPv6 = IPv6;
-
-			if (this.shouldHide(Description))
-			{
-				this.hidden = true;
-			}
+			this.hidden = hide;
 		}
 
 		public override string ToString()
@@ -830,35 +871,6 @@ namespace dnscrypt_winclient
 			message += String.Join(", ", DNSserversv6.ToArray());
 			
 			return message;
-		}
-
-		/// <summary>
-		/// Returns if a device should be flagged as hidden or not.
-		/// Adapters such as Hamachi or virtual machines typically have their own settings
-		/// which you should rarely ever need to change.
-		/// </summary>
-		/// <param name="Name">The name of the NIC</param>
-		private Boolean shouldHide(String Description)
-		{
-			string[] blacklist = { 
-				"Microsoft Virtual",
-				"Hamachi Network",
-				"VMware Virtual",
-				"VirtualBox",
-				"Software Loopback",
-				"Microsoft ISATAP",
-				"Teredo Tunneling Pseudo-Interface"
-			};
-
-			foreach (string entry in blacklist)
-			{
-				if (Description.Contains(entry))
-				{
-					return true;
-				}
-			}
-
-			return false;
 		}
 	}
 
