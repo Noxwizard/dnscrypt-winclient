@@ -247,7 +247,7 @@ namespace dnscrypt_winclient
 			{
 				foreach (string entry in blacklist)
 				{
-					if (this.hardwareInfo[adapter.Description].Properties["PNPDeviceID"] != null && this.hardwareInfo[adapter.Description].Properties["PNPDeviceID"].Value.ToString().Contains(entry))
+					if (this.hardwareInfo[adapter.Description].Properties["PNPDeviceID"].Value != null && this.hardwareInfo[adapter.Description].Properties["PNPDeviceID"].Value.ToString().Contains(entry))
 					{
 						return true;
 					}
