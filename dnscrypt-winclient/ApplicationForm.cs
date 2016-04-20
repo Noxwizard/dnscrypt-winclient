@@ -167,6 +167,12 @@ namespace dnscrypt_winclient
 				}
 
 				CSVReader reader = new CSVReader("dnscrypt-resolvers.csv", true);
+				if (reader.Count == 0)
+				{
+					MessageBox.Show("dnscrypt-resolvers.csv does not contain any entries.", "Parse Error");
+					return;
+				}
+
 				foreach (CSVRow CSVprovider in reader)
 				{
 					DNSCryptProvider provider = new DNSCryptProvider();
@@ -183,7 +189,8 @@ namespace dnscrypt_winclient
 			}
 			catch (Exception err)
 			{
-				MessageBox.Show("There was an error parsing dnscrypt-resolvers.csv: " + err.ToString());
+				MessageBox.Show("There was an error parsing dnscrypt-resolvers.csv: " + err.ToString(), "Parse Error");
+				return;
 			}
 
 			// Load the last used resolver
@@ -758,6 +765,11 @@ namespace dnscrypt_winclient
 		/// <param name="index">Index into the provider array</param>
 		private void populate_Config_Form(int index)
 		{
+			if (this.combobox_provider.Items.Count == 0 || index < 0 || index > this.combobox_provider.Items.Count)
+			{
+				return;
+			}
+
 			this.combobox_provider.SelectedIndex = index;
 
 			this.textbox_server_addr.ReadOnly = false;
